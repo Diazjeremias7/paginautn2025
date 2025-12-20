@@ -1,0 +1,160 @@
+!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de YouTube a MP3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #ff0000;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 0 auto;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            display: block;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            display: block;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff0000;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conversor de YouTube a MP3</h1>
+        <p>Ingresa el enlace del video de YouTube que deseas convertir a MP3:</p>
+        
+        <input type="text" id="youtubeLink" placeholder="Ej: https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        <button onclick="convertToMp3()">Convertir a MP3</button>
+        
+        <div class="loader" id="loader"></div>
+        
+        <div class="result" id="result">
+            <p id="resultText"></p>
+            <a id="downloadLink" href="#" download style="display: none;">Descargar MP3</a>
+        </div>
+    </div>
+
+    <script>
+        function convertToMp3() {
+            const youtubeLink = document.getElementById('youtubeLink').value.trim();
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            const downloadLink = document.getElementById('downloadLink');
+            const loader = document.getElementById('loader');
+            
+            // Validar el enlace
+            if (!youtubeLink) {
+                resultDiv.className = 'result error';
+                resultText.textContent = 'Por favor, ingresa un enlace de YouTube.';
+                return;
+            }
+            
+            if (!isValidYouTubeUrl(youtubeLink)) {
+                resultDiv.className = 'result error';
+                resultText.textContent = 'El enlace proporcionado no parece ser un enlace válido de YouTube.';
+                return;
+            }
+            
+            // Mostrar loader
+            loader.style.display = 'block';
+            resultDiv.style.display = 'none';
+            
+            // Simular conversión (en un caso real, aquí se haría una petición a un servidor)
+            setTimeout(() => {
+                loader.style.display = 'none';
+                
+                // Extraer ID del video (simplificado)
+                const videoId = extractVideoId(youtubeLink);
+                if (!videoId) {
+                    resultDiv.className = 'result error';
+                    resultText.textContent = 'No se pudo extraer el ID del video. Verifica el enlace.';
+                    resultDiv.style.display = 'block';
+                    return;
+                }
+                
+                // Simular éxito en la conversión
+                resultDiv.className = 'result success';
+                resultText.textContent = '¡Conversión completada! El archivo MP3 está listo para descargar.';
+                
+                // En una implementación real, esta sería la URL real del archivo MP3
+                downloadLink.href = `https://example.com/download/${videoId}.mp3`;
+                downloadLink.textContent = `Descargar ${videoId}.mp3`;
+                downloadLink.style.display = 'inline-block';
+                
+                resultDiv.style.display = 'block';
+            }, 2000);
+        }
+        
+        function isValidYouTubeUrl(url) {
+            // Expresión regular simplificada para validar URLs de YouTube
+            const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+            return pattern.test(url);
+        }
+        
+        function extractVideoId(url) {
+            // Extracción simplificada del ID del video
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+    </script>
+</body>
+</html>
